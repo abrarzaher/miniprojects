@@ -1,0 +1,137 @@
+# Tic-Tac-Toe
+# to be played on command terminal, instructions will be shown
+
+#initializing empty board with "-" to clearly display empty spaces
+board = [
+  ["-", "-", "-"],
+  ["-", "-", "-"],
+  ["-", "-", "-"]
+]
+
+turnsPlayed = 0
+xTurn = True # when true, current "player" is "x"
+
+# print board
+def displayBoard(board):
+    for row in board:
+        for box in row:
+            print(f"{box} ", end="")
+        print()
+
+def verifyInput(selectedPos):
+    # verify its a number
+    if not isNum(selectedPos): 
+        return False
+    selectedPos = int(selectedPos)
+    # verify its 1 - 9
+    if not checkRange(selectedPos): 
+        return False
+
+    return True
+
+def isNum(selectedPos):
+    if not selectedPos.isnumeric(): 
+        print("This is not a valid number")
+        return False
+    else: 
+        return True
+
+def checkRange(selectedPos):
+    if selectedPos > 9 or selectedPos < 1: 
+        print("This number is not between 1 and 9")
+        return False
+    else: 
+        return True
+
+# check if position is already filled
+def invalidPos(pos, board):
+    row = pos[0]
+    col = pos[1]
+    if board[row][col] != "-":
+        print("This position is already taken.")
+        return True
+    else: 
+        return False
+
+# convert user input to usable matrix coordinates
+def determinePos(selectedPos):
+    row = int(selectedPos / 3)
+    col = selectedPos
+    if col > 2: 
+        col = int(col % 3)
+    return (row, col)
+
+# draw correct symbol in correct position
+def drawSymbol(pos, board, symbol):
+    row = pos[0]
+    col = pos[1]
+    board[row][col] = symbol
+
+# return the current symbol
+def checkTurn(xTurn):
+    if xTurn: 
+        return "x"
+    else: 
+        return "o"
+
+# check is there is a winner
+def win(xTurn, board):
+    if checkRow(xTurn, board): 
+        return True
+    if checkCol(xTurn, board): 
+        return True
+    if checkDiagonal(xTurn, board): 
+        return True
+    return False
+
+def checkRow(xTurn, board):
+    if board[0][0] == xTurn and board[0][1] == xTurn and board[0][2] == xTurn: 
+        return True
+    elif board[1][0] == xTurn and board[1][1] == xTurn and board[1][2] == xTurn: 
+        return True
+    elif board[2][0] == xTurn and board[2][1] == xTurn and board[2][2] == xTurn: 
+        return True
+    else: 
+        return False
+
+def checkCol(xTurn, board):
+    if board[0][0] == xTurn and board[1][0] == xTurn and board[2][0] == xTurn: 
+        return True
+    elif board[0][1] == xTurn and board[1][1] == xTurn and board[2][1] == xTurn: 
+        return True
+    elif board[0][2] == xTurn and board[1][2] == xTurn and board[2][2] == xTurn: 
+        return True
+    else: 
+        return False
+
+def checkDiagonal(xTurn, board):
+    if board[0][0] == xTurn and board[1][1] == xTurn and board[2][2] == xTurn: 
+        return True
+    elif board[0][2] == xTurn and board[1][1] == xTurn and board[2][0] == xTurn: 
+        return True
+    else: 
+        return False
+
+# main loop
+while turnsPlayed < 9:
+    symbol = checkTurn(xTurn)
+    displayBoard(board)
+    selectedPos = input("Select a position by entering a number from 1 - 9 (ordered from left-right, top-bottom):")
+    if not verifyInput(selectedPos):
+        print("Please try again.")
+        continue
+    selectedPos = int(selectedPos) - 1
+    pos = determinePos(selectedPos)
+    if invalidPos(pos, board):
+        print("Please try again.")
+        continue
+    drawSymbol(pos, board, symbol)
+    if win(symbol, board): 
+        print(f"{symbol.upper()} won!")
+        break
+  
+    turnsPlayed += 1
+    if turnsPlayed == 9: 
+        print("Tie!")
+    xTurn = not xTurn
+    
